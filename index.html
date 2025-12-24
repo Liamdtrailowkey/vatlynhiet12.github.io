@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vật Lý 12 - Chương 1: Vật Lí Nhiệt</title>
     <style>
         /* --- CẤU HÌNH CSS VARIABLES (THEME) --- */
@@ -12,7 +12,7 @@
             --text-color: #f1f5f9;
             --primary-color: #38bdf8; /* Xanh dương sáng */
             --secondary-color: #818cf8; /* Tím nhạt */
-            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-bg: rgba(30, 41, 59, 0.85); /* Tăng độ mờ nền cho mobile dễ đọc */
             --glass-border: rgba(255, 255, 255, 0.1);
             --card-hover: rgba(56, 189, 248, 0.15);
             --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -23,7 +23,7 @@
             --text-color: #1e293b;
             --primary-color: #0284c7;
             --secondary-color: #4f46e5;
-            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(0, 0, 0, 0.05);
             --card-hover: rgba(2, 132, 199, 0.1);
             --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
@@ -36,6 +36,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-tap-highlight-color: transparent; /* Loại bỏ highlight khi tap trên mobile */
         }
 
         body {
@@ -76,10 +77,17 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 1rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
+            justify-content: center; /* Căn giữa nội dung */
             gap: 8px;
+            text-decoration: none;
+            user-select: none;
+        }
+
+        .btn:active {
+            transform: scale(0.96); /* Hiệu ứng nhấn nút */
         }
 
         .btn-primary {
@@ -89,7 +97,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px) scale(1.05);
+            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
         }
 
@@ -107,33 +115,34 @@
         /* Theme Toggle */
         .theme-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             z-index: 100;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         /* --- SECTIONS (PAGES) --- */
         section {
             min-height: 100vh;
-            display: none; /* Ẩn tất cả mặc định */
-            padding: 20px;
+            display: none;
+            padding: 20px 15px; /* Giảm padding trên mobile */
             opacity: 0;
-            animation: fadeIn 0.5s forwards;
+            animation: fadeIn 0.4s forwards;
         }
 
         section.active {
-            display: flex; /* Flex cho Landing, Block cho content */
+            display: flex;
         }
 
         @keyframes fadeIn {
@@ -148,30 +157,38 @@
             text-align: center;
         }
 
+        .landing-content {
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+
         .landing-title {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 10px;
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            line-height: 1.1;
         }
 
         .landing-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 40px;
-            opacity: 0.8;
-            letter-spacing: 2px;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            line-height: 1.4;
         }
 
         /* 2. MENU PAGE */
         #menu-page {
             flex-direction: column;
             align-items: center;
-            padding-top: 80px;
-            display: none; /* Override flex */
+            padding-top: 70px; /* Tránh đè lên nút theme */
+            display: none;
         }
         
         #menu-page.active {
@@ -180,40 +197,48 @@
 
         .page-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Giảm min-width cho vừa mobile nhỏ */
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            padding-bottom: 50px;
+            padding-bottom: 80px; /* Thêm khoảng trống dưới cùng */
         }
 
         .lesson-card {
-            padding: 25px;
+            padding: 20px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 250px;
+            min-height: 220px; /* Dùng min-height thay vì height cố định */
+            /* Touch enhancement */
+            touch-action: manipulation;
         }
 
-        .lesson-card:hover {
-            transform: translateY(-10px);
+        .lesson-card:hover, .lesson-card:active {
+            transform: translateY(-5px);
             background: var(--card-hover);
             border-color: var(--primary-color);
         }
 
         .card-number {
-            font-size: 4rem;
+            font-size: 3.5rem;
             position: absolute;
-            top: -10px;
+            top: -5px;
             right: 10px;
             opacity: 0.1;
             font-weight: 900;
@@ -221,10 +246,11 @@
         }
 
         .card-title {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
             color: var(--primary-color);
             z-index: 1;
+            padding-right: 30px; /* Tránh đè lên số */
         }
 
         .card-desc {
@@ -232,6 +258,7 @@
             opacity: 0.8;
             line-height: 1.5;
             z-index: 1;
+            flex-grow: 1;
         }
 
         .card-icon {
@@ -242,9 +269,9 @@
 
         /* 3. LESSON DETAIL PAGE */
         #lesson-page {
-            display: none; /* Override flex */
-            padding-top: 80px;
-            padding-bottom: 50px;
+            display: none;
+            padding-top: 70px;
+            padding-bottom: 40px;
         }
 
         #lesson-page.active {
@@ -252,46 +279,58 @@
         }
 
         .lesson-container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 40px;
+            padding: 30px;
         }
 
         .nav-buttons {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
         }
 
         .lesson-header-detail {
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--glass-border);
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--glass-border);
             padding-bottom: 20px;
         }
 
         .lesson-header-detail h1 {
             color: var(--primary-color);
-            font-size: 2.5rem;
+            font-size: 2rem;
+            line-height: 1.2;
+            margin-bottom: 10px;
         }
 
         .content-block {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .content-block h3 {
             color: var(--secondary-color);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-left: 4px solid var(--primary-color);
-            padding-left: 10px;
-            font-size: 1.3rem;
+            padding-left: 12px;
+            font-size: 1.2rem;
+            line-height: 1.4;
         }
 
         .content-block p, .content-block ul {
-            font-size: 1.1rem;
-            line-height: 1.7;
+            font-size: 1.05rem;
+            line-height: 1.6;
             margin-bottom: 10px;
             color: var(--text-color);
-            opacity: 0.9;
+            opacity: 0.95;
+        }
+        
+        .content-block ul {
+            padding-left: 20px;
+        }
+        
+        .content-block li {
+            margin-bottom: 8px;
         }
 
         .formula-box {
@@ -301,9 +340,11 @@
             text-align: center;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.1rem; /* Giảm font size công thức cho mobile */
             margin: 15px 0;
             border: 1px dashed var(--secondary-color);
+            overflow-x: auto; /* Cho phép cuộn ngang nếu công thức dài */
+            white-space: nowrap;
         }
 
         /* PHET Simulation Frame */
@@ -316,6 +357,7 @@
             border-radius: 12px;
             margin-top: 20px;
             border: 2px solid var(--glass-border);
+            background: #000;
         }
 
         .simulation-container iframe {
@@ -327,12 +369,30 @@
             border: 0;
         }
 
-        /* Responsive */
+        /* --- MOBILE SPECIFIC RESPONSIVENESS --- */
         @media (max-width: 768px) {
             .landing-title { font-size: 2.5rem; }
-            .grid-container { grid-template-columns: 1fr; }
-            .lesson-container { padding: 20px; }
-            .card-number { font-size: 3rem; }
+            .lesson-container { padding: 20px 15px; }
+            .card-number { font-size: 2.5rem; }
+            
+            /* Tăng kích thước nút trên mobile */
+            .btn {
+                padding: 14px 24px; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .landing-title { font-size: 2rem; }
+            .landing-subtitle { font-size: 1rem; }
+            .btn { width: 100%; } /* Nút full chiều ngang */
+            .nav-buttons { flex-direction: column; } /* Nút xếp chồng dọc */
+            .page-header h2 { font-size: 1.8rem; }
+            
+            .lesson-header-detail h1 { font-size: 1.6rem; }
+            .content-block p, .content-block ul { font-size: 1rem; }
+            
+            /* Ẩn bớt hiệu ứng phức tạp */
+            .glass { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         }
     </style>
 </head>
@@ -342,11 +402,11 @@
     <canvas id="canvas-bg"></canvas>
 
     <!-- Toggle Dark/Light Mode -->
-    <button class="theme-toggle glass" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" aria-label="Đổi giao diện">🌙</button>
 
     <!-- 1. LANDING PAGE -->
     <section id="landing-page" class="active">
-        <div class="glass" style="padding: 40px 60px; text-align: center;">
+        <div class="glass landing-content">
             <h1 class="landing-title">VẬT LÝ 12</h1>
             <p class="landing-subtitle">KẾT NỐI TRI THỨC - CHƯƠNG 1: VẬT LÍ NHIỆT</p>
             <button class="btn btn-primary" onclick="navigateTo('menu-page')">
@@ -358,10 +418,12 @@
     <!-- 2. MENU PAGE -->
     <section id="menu-page">
         <div class="page-header">
-            <h2 style="font-size: 2.5rem; color: var(--primary-color);">DANH SÁCH BÀI HỌC</h2>
-            <p style="opacity: 0.8;">Chọn bài học để bắt đầu khám phá</p>
+            <h2>DANH SÁCH BÀI HỌC</h2>
+            <p>Chọn bài học để bắt đầu khám phá</p>
             <br>
-            <button class="btn btn-outline" onclick="navigateTo('landing-page')">🏠 Về trang chủ</button>
+            <div style="max-width: 300px; margin: 0 auto;">
+                <button class="btn btn-outline" onclick="navigateTo('landing-page')">🏠 Về trang chủ</button>
+            </div>
         </div>
         
         <div class="grid-container" id="lesson-grid">
@@ -391,7 +453,8 @@
                         "<strong>Sự chuyển thể:</strong> Nóng chảy, Đông đặc, Hóa hơi, Ngưng tụ, Thăng hoa."
                     ],
                     formulas: [
-                         "Không có công thức toán học cụ thể, tập trung vào giải thích hiện tượng vi mô."
+                         "Q = &lambda;m (Nóng chảy)",
+                         "Q = Lm (Hóa hơi)"
                     ],
                     example: "Giải thích tại sao nước đá tan chảy khi để ngoài không khí, hoặc tại sao có sương đọng trên lá cây vào buổi sáng.",
                     phetUrl: "https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html"
@@ -546,8 +609,9 @@
                     <h3>4. Thí nghiệm mô phỏng (PHET Interactive)</h3>
                     <p>Tương tác trực tiếp với mô phỏng bên dưới để hiểu rõ hơn bản chất vật lý:</p>
                     <div class="simulation-container">
-                        <iframe src="${lesson.content.phetUrl}" allowfullscreen></iframe>
+                        <iframe src="${lesson.content.phetUrl}" allowfullscreen title="PHET Simulation"></iframe>
                     </div>
+                    <p style="font-size:0.8rem; margin-top:5px; text-align:center; opacity:0.7">Chạm vào màn hình để tương tác</p>
                 </div>
                 `;
             }
@@ -641,7 +705,12 @@
 
         function initParticles() {
             particlesArray = [];
-            let numberOfParticles = (canvas.height * canvas.width) / 15000;
+            
+            // MOBILE OPTIMIZATION: Giảm số lượng hạt trên thiết bị nhỏ
+            // Nếu màn hình < 768px, chia cho 25000 thay vì 15000 (ít hạt hơn)
+            let divider = window.innerWidth < 768 ? 30000 : 15000;
+            
+            let numberOfParticles = (canvas.height * canvas.width) / divider;
             for (let i = 0; i < numberOfParticles; i++) {
                 particlesArray.push(new Particle());
             }
@@ -660,11 +729,14 @@
 
         function connect() {
             let opacityValue = 1;
+            // MOBILE OPTIMIZATION: Giảm khoảng cách nối trên mobile để đỡ rối mắt
+            let connectDistanceDiv = window.innerWidth < 768 ? 9 : 7;
+            
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
                                    ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (canvas.width/7) * (canvas.height/7)) {
+                    if (distance < (canvas.width/connectDistanceDiv) * (canvas.height/connectDistanceDiv)) {
                         opacityValue = 1 - (distance/10000);
                         ctx.strokeStyle = 'rgba(56, 189, 248,' + opacityValue * 0.2 + ')'; // Màu đường nối
                         ctx.lineWidth = 1;
